@@ -90,7 +90,7 @@ class Search:
 
             successes, trials, prob, ci, ssize = vals[size(self.entries, hedge, k)]
 
-            if prob+ci < self.goal or (prob-ci> self.goal-self.ci_limit and 
+            if prob+ci <= self.goal or (prob-ci> self.goal-self.ci_limit and 
                                             prob+ci<self.goal+self.ci_limit):
                 # failure, try going higher
                 old_low = low
@@ -100,7 +100,7 @@ class Search:
                     low += 1
             
             # success if we are above the goal, or we are within a tight confidence interval
-            elif (prob-ci >= self.goal):
+            elif (prob-ci > self.goal):
                 # success, try going lower
                 old_high = high
                 high = refit(self.entries, (high+low)/2, k)

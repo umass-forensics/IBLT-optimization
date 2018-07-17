@@ -63,30 +63,32 @@ We generated all output on a compute cluster, hence there is no main file that i
 Here's sample output file produced by the above command:
 
 ```
-20, 0.995833, 4, 3.000000, 60, 15657, 15723
-20, 0.995833, 3, 4.950000, 99, 22016, 22112
-20, 0.995833, 5, 2.250000, 45, 24531, 24639
-20, 0.995833, 6, 2.400000, 48, 4994, 5000
-20, 0.995833, 7, 2.800000, 56, 5000, 5000
-20, 0.995833, 8, 2.800000, 56, 4994, 5000
-20, 0.995833, 9, 3.150000, 63, 4999, 5000
+20, 0.995833, 4, 3.200000, 64, 9461, 9490
+20, 0.995833, 3, 5.700000, 114, 8324, 8349
+20, 0.995833, 5, 2.500000, 50, 6589, 6608
+20, 0.995833, 6, 2.400000, 48, 5405, 5420
+20, 0.995833, 7, 2.450000, 49, 12531, 12571
+20, 0.995833, 8, 2.800000, 56, 5000, 5000
+20, 0.995833, 9, 3.150000, 63, 5000, 5000
 20, 0.995833, 10, 3.500000, 70, 5000, 5000
-20, 0.995833, 11, 3.300000, 66, 4988, 5000
-20, 0.995833, 12, 3.600000, 72, 4994, 5000
+20, 0.995833, 11, 3.300000, 66, 16086, 16139
+20, 0.995833, 12, 3.600000, 72, 4992, 5000
 ```
-The script always runs *k=4* first as this tends to be the best choice; searches for other values of *k* are pruned based on the size resulting from *k=4*. In this case, we can see the optimal setting is indeed *k=4*, which results in a hedge factor of *h=3.0* and an IBLT of 60 rows. When the script executed, it  observed a decode rate of 15657/15723=0.9958023278 for *k=4* and *h=3.0*. This proportion is acceptable statistically because it has a 95% confidence interval of 
+The script always runs *k=4* first as this tends to be the best choice; searches for other values of *k* are pruned based on the size resulting from *k=4*. In this case, we can see the optimal setting is indeed *k=4*, which results in a hedge factor of *h=3.0* and an IBLT of 60 rows. When the script executed, it  observed a decode rate of 9461/9490=0.9969441517 for *k=4* and *h=3.2*. This proportion is acceptable statistically because it has a 95% confidence interval of 
 
-```ci = 1.96 *sqrt(15657/15723\* (1-15657/15723) / 15723) = 0.00101```
+```ci = 1.96 *sqrt(9461/9490\* (1-9461/9490) / 9490) = 0.001110514601```
 
-That is the desired decode rate lies within the 95% ci:
+That is the desired decode is higher and outside the 95% ci:
 
-```(0.9958023278-0.00101) <= 239/240 <= (0.9958023278+0.00101 )```
+```239/240 < (0.9969441517-0.001110514601)```
+
+For *n=20*, the output file contains *k=6* and *h=2.4* as that results in the smallest number of rows: 48. 
 
 An R script included with this repository aggregates all output and produces the CSV:
 
 ```Rscript parse_bin_search.R```
 
-An example output csv is included:  **param.export.0.995833.2018-07-16.csv**
+An example output csv is included:  **param.export.0.995833.2018-07-17.csv**
 
 The failure rate and confidence interval of every 5th row of the csv file is shown in the plot below. Error bars are the 95% confidence interval. The dotted line is the desired failure rate of *1-239/240*.
 
@@ -99,6 +101,12 @@ A script is included that tests each value of the CSV parameter file. The script
 ```python3 confirm-rate.py param.export.0.995833.2018-07-16.csv```
 
 Output from the file is sent to the command line as it runs. The test again uses confidence intervals to evaluate statistical significance. 
+
+Here's the output for testing 20:
+```
+20, 2.400000, 6, 48, 1410, 1411, 0.999291, 0.001389, 1444, 1445, 0.999308, 0.001356
+```
+
 
 # Converting to a CPP header file
 
