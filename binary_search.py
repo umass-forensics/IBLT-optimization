@@ -37,9 +37,6 @@ class Search:
         successes = 0
         
         while True:
-            # enforce collect/del to help slurm cluster jobs execute with min memory
-            # probably doesn't help in the end...
-            gc.collect()
             p = PYBLT(entries=self.entries, value_size=9, hedge=hedge, num_hashes=k)
 
             for _ in range(self.entries):
